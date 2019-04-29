@@ -1,0 +1,5 @@
+<launch>
+  <arg name="stage_name" default="turtlebot3_stage_1"/>
+  <include file="$(find turtlebot3_gazebo)/launch/$(arg stage_name).launch">
+  </include>  
+</launch>

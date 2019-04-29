@@ -1,0 +1,6 @@
+#!/bin/bash
+roslaunch turtlebot3_gazebo turtlebot3_stage_switch.launch stage_name:=turtlebot3_stage_3
+sleep 30s
+killall -9 gazebo & killall -9 gzserver  & killall -9 gzclient
+roslaunch turtlebot3_gazebo turtlebot3_stage_switch.launch stage_name:=turtlebot3_stage_4
+

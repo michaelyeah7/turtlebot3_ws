@@ -1,0 +1,9 @@
+<launch>
+     <include file="$(find turtlebot3_gazebo)/launch/cadrl_multi_turtlebot3.launch" />
+
+     <node pkg="obstacle_detector" type="obstacle_extractor_node" name="obstaclextractor_node" output="screen">
+    </node>
+     <node pkg="obstacle_detector" type="obstacle_tracker_node" name="obstacle_tracker_node" output="screen">
+    </node>
+
+</launch>
