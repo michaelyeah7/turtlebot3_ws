@@ -1,0 +1,18 @@
+export TURTLEBOT3_MODEL=burger
+roslaunch turtlebot3_gazebo cadrl_multi_turtlebot3.launch
+rosrun basics ScanToPCl.py #transform laser data to pointcloud2
+rosrun kf_tracker tracker #publish viz
+rosrun rotate_turtlebot3 cadrl_control_host_v2.py
+
+
+
+
+roslaunch turtlebot3_gazebo turtlebot3_house.launch
+roslaunch turtlebot3_gazebo turtlebot3_gazebo_rviz.launch
+
+roslaunch turtlebot3_gazebo turtlebot3_world.launch
+roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch
+
+
+
+
