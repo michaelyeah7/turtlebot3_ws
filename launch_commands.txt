@@ -1,4 +1,12 @@
 export TURTLEBOT3_MODEL=burger
+roslaunch rotate_turtlebot3 cadrl.launch #include launch turtlebot and obstacle tracker
+rosrun rotate_turtlebot3 cadrl_control_host_v4.py
+
+
+
+
+
+
 roslaunch turtlebot3_gazebo cadrl_multi_turtlebot3.launch
 rosrun basics ScanToPCl.py #transform laser data to pointcloud2
 rosrun kf_tracker tracker #publish viz

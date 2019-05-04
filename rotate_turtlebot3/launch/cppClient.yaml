@@ -1,0 +1,14 @@
+# name of the map coordinate system
+# string
+#   image_path = env_pack_path + "/envs/" + map_name + "/" + file_name;
+env_pack: "/home/yeguo/turtlebot3_ws/src/map/"
+
+# file name 
+# string
+image: "map5.pgm" #map5.pgm"
+
+# map name
+# string
+robot_env: "simple"
+
+use_test_maps: false
