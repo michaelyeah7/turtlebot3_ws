@@ -4,6 +4,10 @@
   <arg name="y_pos" default="-0.5"/>
   <arg name="z_pos" default="0.0"/>
 
+  <arg name="map_file" default="$(find turtlebot3_navigation)/maps/map.yaml"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="move_forward_only" default="false"/>
+
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/turtlebot3_world.world"/>
     <arg name="paused" value="false"/>
@@ -16,4 +20,29 @@
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
 
   <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"  args="-urdf -model turtlebot3_$(arg model) -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- Add map to odom tf -->
+  <node pkg="tf" type="static_transform_publisher" name="map_to_odom_broadcaster" args="0 0 0 0 0 0 map odom 100" />
+
+  <!-- Add footprint to base_link tf -->
+  <node pkg="tf" type="static_transform_publisher" name="footprint_to_base_link_broadcaster" args="0 0 0.171 0 0 0 base_footprint base_link 100" />
+
+  <!-- Add base_link to base_scan tf -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_base_scan_broadcaster" args="-0.032 0 0.171 0 0 0 base_link base_scan 100" />
+
+  <!-- Add base_link to wheel_left tf -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_wheel_left_broadcaster" args="0.0 0.08 0.023 -1.57 0 0 base_link wheel_left_link 100" />
+
+  <!-- Add base_link to wheel_right tf -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_wheel_right_broadcaster" args="0.0 -0.08 0.023 -1.57 0 0 base_link wheel_right_link 100" />
+
+  <!-- move_base -->
+  <include file="$(find turtlebot3_navigation)/launch/move_base.launch">
+    <arg name="model" value="$(arg model)" />
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
+
 </launch>

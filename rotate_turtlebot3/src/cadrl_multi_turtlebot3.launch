@@ -1,5 +1,5 @@
 <launch>
-     <include file="$(find turtlebot3_gazebo)/launch/cadrl_multi_turtlebot3.launch" />
+     <include file="$(find turtlebot3_gazebo)/launch/cadrl_house_turtlebot3.launch"/>
 
      <node pkg="obstacle_detector" type="obstacle_extractor_node" name="obstacle_extractor_node" output="screen">
     </node>
