@@ -23,7 +23,7 @@ from nav_msgs.srv import GetPlan
 class cadrl_control_host():
     def __init__(self):
         self.node_name = rospy.get_name()
-        self.received_path = True
+        self.received_path = False
         self.path = [(-1,5),(4,4),(-1,3),(-1,2),(-1,1),(-2,1),(-2,2),(-2,3),(-2,4),(-2,5)]
         self.sub_goal_index = 0
         self.world_frame_id = 'host_tb3/odom'
@@ -35,12 +35,12 @@ class cadrl_control_host():
         self.other_agents_heading_angle = -3.14
 
 	#global planner path
-	self.plan_response=self.get_path()
-	print("self.plan_response:",self.plan_response)
+	#self.plan_response=self.get_path()
+	#print("self.plan_response:",self.plan_response)
 
         #host
-        self.host_goal_x = self.plan_response.plan.poses[self.sub_goal_index].pose.position.x
-        self.host_goal_y = self.plan_response.plan.poses[self.sub_goal_index].pose.position.y
+        self.host_goal_x = 0
+        self.host_goal_y = 0
         self.host_pos_x = 0.0
         self.host_pos_y = 0.0
         self.host_heading_angle = 0.0
@@ -68,6 +68,7 @@ class cadrl_control_host():
         #self.agent_pos_sub = rospy.Subscriber('viz', MarkerArray, self.cb_handle_obs)
         self.agent_pos_sub = rospy.Subscriber('tracked_obstacles', Obstacles, self.cb_handle_obs)
         self.path_sub = rospy.Subscriber("/room_exploration_server/coverage_path", Path, self.cb_get_path)
+	self.goal_sub = rospy.Subscriber('goal', PoseStamped, self.cb_get_goal)
 
         #publisher
         self.host_cmd_vel_pub = rospy.Publisher('cmd_vel',Twist,queue_size=1)
@@ -161,25 +162,34 @@ class cadrl_control_host():
         start.header.frame_id = "map"
         start.pose.position.x = self.host_pos_x
         start.pose.position.y = self.host_pos_y
-	goal=msg
+        goal = PoseStamped()
+        goal.header.frame_id = "map"
+	#print("goal.position.x",msg.pose.position.x)
+	#print("goal.position.y",msg.pose.position.y)
+        goal.pose.position.x = msg.pose.position.x
+        goal.pose.position.y = msg.pose.position.y
+        #goal=msg
         tolerance = 0.0
 	
-	plan_response = make_plan(start = start, goal = goal, tolerance = tolerance)
-	return plan_response
+	self.plan_response = make_plan(start = start, goal = goal, tolerance = tolerance)
+	self.received_path=True
+	self.path_len=len(self.plan_response.plan.poses)
+	#return plan_response
 
 
 	
 
     def control(self,event):
-        if self.received_path == True:
+        if self.received_path == True and self.sub_goal_index<self.path_len:
+            self.host_goal_x = self.plan_response.plan.poses[self.sub_goal_index].pose.position.x
+            self.host_goal_y = self.plan_response.plan.poses[self.sub_goal_index].pose.position.y
             #print("here we come")
             print("self.host_goal_x and y", self.host_goal_x,self.host_goal_y)
             print("self.host_pos_x and y",self.host_pos_x,self.host_pos_y)
             if ((abs(self.host_pos_x - self.host_goal_x) + abs(self.host_pos_y - self.host_goal_y)) < 0.3):
                 #self.host_goal_x = self.path.poses[self.sub_goal_index].pose.position.x
                 #self.host_goal_y = self.path.poses[self.sub_goal_index].pose.position.y
-                self.host_goal_x = self.plan_response.plan.poses[self.sub_goal_index].pose.position.x
-                self.host_goal_y = self.plan_response.plan.poses[self.sub_goal_index].pose.position.y
+
                 print colored('here we change the host_goal', 'green')
                 #print("here we change the host_goal")
                 print("sub_goal_index is", self.sub_goal_index)
@@ -229,6 +239,15 @@ class cadrl_control_host():
             tb3_2_command = Twist()
             tb3_2_command.linear.x = self.pref_speed
             self.tb3_2_cmd_vel_pub.publish(tb3_2_command)
+        else:
+            self.received_path = False
+            self.sub_goal_index=0
+            command = Twist()
+            self.host_cmd_vel_pub.publish(command)
+            #print("zero command",command)
+
+
+
 
     def global_plan(self):
         if self.received_path == True:

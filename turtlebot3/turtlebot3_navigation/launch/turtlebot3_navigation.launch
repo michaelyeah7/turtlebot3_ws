@@ -6,15 +6,30 @@
   <arg name="move_forward_only" default="false"/>
 
   <!-- Turtlebot3 -->
-  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
+  <!--<include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
     <arg name="model" value="$(arg model)" />
-  </include>
+  </include>-->
 
   <!-- Map server -->
   <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
 
   <!-- AMCL -->
   <include file="$(find turtlebot3_navigation)/launch/amcl.launch"/>
+
+  <!-- Add map to odom tf -->
+  <node pkg="tf" type="static_transform_publisher" name="map_to_odom_broadcaster" args="0 0 0 0 0 0 map odom 100" />
+
+  <!-- Add footprint to base_link tf -->
+  <node pkg="tf" type="static_transform_publisher" name="footprint_to_base_link_broadcaster" args="0 0 0.171 0 0 0 base_footprint base_link 100" />
+
+  <!-- Add base_link to base_scan tf -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_base_scan_broadcaster" args="-0.032 0 0.171 0 0 0 base_link base_scan 100" />
+
+  <!-- Add base_link to wheel_left tf -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_wheel_left_broadcaster" args="0.0 0.08 0.023 -1.57 0 0 base_link wheel_left_link 100" />
+
+  <!-- Add base_link to wheel_right tf -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_wheel_right_broadcaster" args="0.0 -0.08 0.023 -1.57 0 0 base_link wheel_right_link 100" />
 
   <!-- move_base -->
   <include file="$(find turtlebot3_navigation)/launch/move_base.launch">
