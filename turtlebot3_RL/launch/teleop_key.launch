@@ -1,0 +1,13 @@
+<launch>
+  <arg name="model" default="burger" doc="model type [burger, waffle, waffle_pi]"/>
+  <arg name="cmd" default="humanCmd"/>
+  <param name="model" value="$(arg model)"/>
+  <param name="cmd_topic" value="$(arg cmd)"/>
+  <param name="lin_step_size" value="0.08"/>
+  <param name="ang_step_size" value="0.8"/>
+
+
+  <!-- turtlebot3_teleop_key already has its own built in velocity smoother -->
+  <node pkg="turtlebot3_RL" type="my_turtlebot3_teleop_key.py" name="my_turtlebot3_teleop_keyboard"  output="screen">
+  </node>
+</launch>

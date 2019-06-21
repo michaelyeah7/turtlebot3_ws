@@ -1,0 +1,6 @@
+model_checkpoint_path: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V1/PPO_model-166.ckpt"
+all_model_checkpoint_paths: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V1/PPO_model-162.ckpt"
+all_model_checkpoint_paths: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V1/PPO_model-163.ckpt"
+all_model_checkpoint_paths: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V1/PPO_model-164.ckpt"
+all_model_checkpoint_paths: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V1/PPO_model-165.ckpt"
+all_model_checkpoint_paths: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V1/PPO_model-166.ckpt"

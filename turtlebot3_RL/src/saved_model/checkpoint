@@ -1,0 +1,6 @@
+model_checkpoint_path: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/my_test_model-8.ckpt"
+all_model_checkpoint_paths: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/my_test_model-4.ckpt"
+all_model_checkpoint_paths: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/my_test_model-5.ckpt"
+all_model_checkpoint_paths: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/my_test_model-6.ckpt"
+all_model_checkpoint_paths: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/my_test_model-7.ckpt"
+all_model_checkpoint_paths: "/home/qinjielin/RL_Ws/turtleBot3_ws/src/turtlebot3_RL/src/saved_model/my_test_model-8.ckpt"

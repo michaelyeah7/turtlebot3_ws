@@ -1,0 +1,25 @@
+<launch>
+  <arg name="stage" default="4"/>
+  <arg name="train" default="true"/>
+  <arg name="load" default="false"/>
+  <arg name="itimateLearning" default="false"/>
+  <arg name="filename" default="PPO_V11"/>
+  <arg name="load_ep" default="91"/>
+  <arg name="ep_len" default="100"/>
+  <arg name="reset_epLen" default="800"/>
+
+  <param name="stage_number"  value="$(arg stage)"/>
+  <param name="train"  value="$(arg train)"/>
+  <param name="load"  value="$(arg load)"/>
+  <param name="filename"  value="$(arg filename)"/>
+  <param name="load_ep"  value="$(arg load_ep)"/>
+  <param name="ep_len"  value="$(arg ep_len)"/>
+  <param name="reset_epLen"  value="$(arg reset_epLen)"/>
+  <param name="itimateFlag"  value="$(arg itimateLearning)"/>
+  <param name="lin_weight"  value="10"/>
+  <param name="ori_weight"  value="1"/>
+  <param name="obs_weight"  value="10"/>
+
+  <node pkg="turtlebot3_RL" type="turtlebot3_PPO_house_v1.py" name="turtlebot3_PPO_house_v1.py" output="screen" />
+
+</launch>
