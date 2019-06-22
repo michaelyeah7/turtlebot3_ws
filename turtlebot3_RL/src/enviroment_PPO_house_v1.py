@@ -86,7 +86,7 @@ class Env():
     def getState(self, scan):
         scan_range = []
         heading = self.heading
-        min_range = 0.13
+        min_range = 0.25
         done = False
         full_scan_range = []
         range_dim = 60
@@ -151,10 +151,16 @@ class Env():
         if( forward_distance>0):
         #lin_reward = math.exp(forward_distance) * self.lin_weight
 	    lin_reward = action[1] * 0.5 * self.lin_weight
+	else:
+	    lin_reward = - action[1] * 0.5 * self.lin_weight
 
+	#if move too slow, punish
+	freeze_reward=0
+	if(action[1]<0.7):
+	    freeze_reward=-0.1
 	#if too close to obstacle, get negative reward
         obs_reward = 0
-        if ((obs_min_range > 0.13) and (obs_min_range < 0.25)):
+        if ((obs_min_range > 0.25) and (obs_min_range < 0.5)):
             obs_reward -= (0.25 - obs_min_range) * 0.3 * self.obs_weight
 
 	#print("distance_reward:",distance_reward)
@@ -162,7 +168,8 @@ class Env():
 	print("lin_reward:",lin_reward)
 	print("ori_reward:",ori_reward)
 	print("obs_reward:",obs_reward)
-        reward = rot_reward + lin_reward + ori_reward + obs_reward
+	print("freeze_reward:",freeze_reward)
+        reward = rot_reward + lin_reward + ori_reward + obs_reward + freeze_reward - 0.1
 	print("total reward:",reward)
 
         #print("state:",np.round(state,2))

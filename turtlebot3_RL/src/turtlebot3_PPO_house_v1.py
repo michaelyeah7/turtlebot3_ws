@@ -15,7 +15,8 @@ import sys
 from geometry_msgs.msg import Twist, Point, Pose
 import time
 
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="3"
+gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.15)
 
 rospy.init_node('turtlebot3_PPO_house_v1')
 trainFlag = rospy.get_param('/train')
@@ -45,7 +46,7 @@ METHOD = [
 class PPO(object):
 
     def __init__(self):
-        self.sess = tf.Session()
+        self.sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
         self.tfs = tf.placeholder(tf.float32, [None, S_DIM], 'state')
 
         # critic
@@ -218,6 +219,8 @@ for ep in range(EP_MAX):
         ppo.save_model(filename,saveEp)
     if ep == 0: all_ep_r.append(ep_r)
     else: all_ep_r.append(all_ep_r[-1]*0.9 + ep_r*0.1)
+    with open("/root/test.txt", "a") as myfile:
+        myfile.write('%f\n' % ep_r)
     print(
         'Ep: %i' % ep,
         "|Ep_r: %i" % ep_r,
