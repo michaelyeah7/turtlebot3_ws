@@ -47,7 +47,7 @@ import matplotlib.pyplot as plt
 from enviroment_PPO_house_v1 import Env
 import rospy
 rospy.init_node('main_v2')
-os.environ["CUDA_VISIBLE_DEVICES"]="2"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 class GracefulKiller:
     """ Gracefully exit program on CTRL-C """
@@ -74,7 +74,7 @@ def init_gym():
         number of action dimensions (int)
     """
 
-    S_DIM, A_DIM = 10, 2 #guo changed here
+    S_DIM, A_DIM = 41, 2 #guo changed here
     action_size = A_DIM 
     state_size = S_DIM
     env = Env(action_size)
@@ -108,6 +108,7 @@ def run_episode(env, policy, scaler, animate=False):
     """
     obs = env.reset()
     observes, actions, rewards, unscaled_obs = [], [], [], []
+    total_reward = 0 #guo changed here, record the total reward of each episode
     done = False
     step = 0.0
     scale, offset = scaler.get()
@@ -128,14 +129,14 @@ def run_episode(env, policy, scaler, animate=False):
         obs = (obs - offset) * scale  # center and scale observations
         obs=obs[np.newaxis,:]
         observes.append(obs)
-        print("obs shape",obs.shape)
+        #print("obs shape",obs.shape)
         #guo changed here, we do not need to add time step feature
         action = policy.sample(obs).astype(np.float64)
         #clip the velocity
         action=np.clip(action,-2,2)
         #action = policy.sample(obs).reshape((1, -1)).astype(np.float64)
         actions.append(action)
-        print("action",action)
+        #print("action",action)
 
         #guo changed here, only return three 
         obs, reward, done = env.step(action[0,:])        
@@ -148,8 +149,12 @@ def run_episode(env, policy, scaler, animate=False):
         #if not isinstance(reward, float):
             #reward = np.asscalar(reward)
         rewards.append(reward)
+        total_reward+=reward
         step += 1  # increment time step feature
 
+    with open("/root/test.txt", "a") as myfile:
+        myfile.write('%f\n' % total_reward)
+    print("eposide reward:",total_reward)
     success_rate = rewards.count(-0.0) / len(rewards)
     return (np.concatenate(observes), np.concatenate(actions),
             np.array(rewards, dtype=np.float64), np.concatenate(unscaled_obs), success_rate)
@@ -344,10 +349,10 @@ def main(num_episodes, gamma, lam, kl_targ, batch_size, env_name, monitor=False)
         policy.update(observes, actions, advantages, logger, plotter)  # update policy
         val_func.fit(observes, disc_sum_rew, logger, plotter)  # update value function
         logger.write(display=True)  # write logger results to file and stdout
-        if killer.kill_now:
-            if input('Terminate training (y/[n])? ') == 'y':
-                break
-            killer.kill_now = False
+        # if killer.kill_now:
+        #     if input('Terminate training (y/[n])? ') == 'y':
+        #         break
+        #     killer.kill_now = False
     logger.close()
     plotter.plot()
 
