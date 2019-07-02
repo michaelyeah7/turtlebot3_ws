@@ -100,10 +100,15 @@ class PPO(object):
         [self.sess.run(self.ctrain_op, {self.tfs: s, self.tfdc_r: r}) for _ in range(C_UPDATE_STEPS)]
 
     def _build_anet(self, name, trainable):
+	hid1_size = S_DIM * 10  # 10 empirically determined
+        hid3_size = A_DIM * 10  # 10 empirically determined
+        hid2_size = int(np.sqrt(hid1_size * hid3_size))
         with tf.variable_scope(name):
-            l1 = tf.layers.dense(self.tfs, 100, tf.nn.relu, trainable=trainable)
-            mu = 2 * tf.layers.dense(l1, A_DIM, tf.nn.tanh, trainable=trainable)
-            sigma = tf.layers.dense(l1, A_DIM, tf.nn.softplus, trainable=trainable)
+            l1 = tf.layers.dense(self.tfs, hid1_size, tf.nn.relu, trainable=trainable)
+	    l2 = tf.layers.dense(l1, hid2_size, tf.nn.relu, trainable=trainable)
+	    l3 = tf.layers.dense(l2, hid3_size, tf.nn.relu, trainable=trainable)
+            mu = 2 * tf.layers.dense(l3, A_DIM, tf.nn.tanh, trainable=trainable)
+            sigma = tf.layers.dense(l3, A_DIM, tf.nn.softplus, trainable=trainable)
             norm_dist = tf.distributions.Normal(loc=mu, scale=sigma)
         params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=name)
         return norm_dist, params

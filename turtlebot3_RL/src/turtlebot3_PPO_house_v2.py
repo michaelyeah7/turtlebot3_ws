@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import gym
-from enviroment_PPO_house_v3 import Env
+from enviroment_PPO_house_v2 import Env
 
 import rospy
 import os
@@ -17,7 +17,7 @@ import time
 
 os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
-rospy.init_node('turtlebot3_PPO_house_v1')
+rospy.init_node('turtlebot3_PPO_house_v2')
 trainFlag = rospy.get_param('/train')
 loadFalg =  rospy.get_param('/load')
 filename = rospy.get_param('/filename')
@@ -35,7 +35,7 @@ C_LR = 0.0002
 BATCH =  8#32 QinjieLin
 A_UPDATE_STEPS = 10#10
 C_UPDATE_STEPS = 10#10
-S_DIM, A_DIM = 10, 2  #QinjieLin 16,2
+S_DIM, A_DIM = 43, 2  #QinjieLin 16,2
 METHOD = [
     dict(name='kl_pen', kl_target=0.01, lam=0.5),   # KL penalty
     dict(name='clip', epsilon=0.2),                 # Clipped surrogate objective, find this is better
@@ -115,10 +115,15 @@ class PPO(object):
         [self.sess.run(self.ctrain_op, {self.tfs: s, self.tfdc_r: r}) for _ in range(C_UPDATE_STEPS)]
 
     def _build_anet(self, name, trainable):
+	hid1_size = S_DIM * 10  # 10 empirically determined
+        hid3_size = A_DIM * 10  # 10 empirically determined
+        hid2_size = int(np.sqrt(hid1_size * hid3_size))
         with tf.variable_scope(name):
-            l1 = tf.layers.dense(self.tfs, 100, tf.nn.relu, trainable=trainable)
-            mu = 2 * tf.layers.dense(l1, A_DIM, tf.nn.tanh, trainable=trainable)
-            sigma = tf.layers.dense(l1, A_DIM, tf.nn.softplus, trainable=trainable)
+            l1 = tf.layers.dense(self.tfs, hid1_size, tf.nn.relu, trainable=trainable)
+	    l2 = tf.layers.dense(l1, hid2_size, tf.nn.relu, trainable=trainable)
+	    l3 = tf.layers.dense(l2, hid3_size, tf.nn.relu, trainable=trainable)
+            mu = 2 * tf.layers.dense(l3, A_DIM, tf.nn.tanh, trainable=trainable)
+            sigma = tf.layers.dense(l3, A_DIM, tf.nn.softplus, trainable=trainable)
             norm_dist = tf.distributions.Normal(loc=mu, scale=sigma)
         params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=name)
         return norm_dist, params
@@ -218,6 +223,8 @@ for ep in range(EP_MAX):
         ppo.save_model(filename,saveEp)
     if ep == 0: all_ep_r.append(ep_r)
     else: all_ep_r.append(all_ep_r[-1]*0.9 + ep_r*0.1)
+    with open("/home/yeguo/test.txt", "a") as myfile:
+        myfile.write('%f\n' % ep_r)	
     print(
         'Ep: %i' % ep,
         "|Ep_r: %i" % ep_r,

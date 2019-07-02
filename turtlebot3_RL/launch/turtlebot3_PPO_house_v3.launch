@@ -20,6 +20,6 @@
   <param name="ori_weight"  value="1"/>
   <param name="obs_weight"  value="10"/>
 
-  <node pkg="turtlebot3_RL" type="turtlebot3_PPO_house_v4.py" name="turtlebot3_PPO_house_v4.py" output="screen" />
+  <node pkg="turtlebot3_RL" type="turtlebot3_PPO_house_v3.py" name="turtlebot3_PPO_house_v1.py" output="screen" />
 
 </launch>

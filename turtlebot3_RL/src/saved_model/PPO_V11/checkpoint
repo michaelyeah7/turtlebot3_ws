@@ -1,6 +1,0 @@
-model_checkpoint_path: "/home/yeguo/turtlebot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V11/PPO_model-23.ckpt"
-all_model_checkpoint_paths: "/home/yeguo/turtlebot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V11/PPO_model-19.ckpt"
-all_model_checkpoint_paths: "/home/yeguo/turtlebot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V11/PPO_model-20.ckpt"
-all_model_checkpoint_paths: "/home/yeguo/turtlebot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V11/PPO_model-21.ckpt"
-all_model_checkpoint_paths: "/home/yeguo/turtlebot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V11/PPO_model-22.ckpt"
-all_model_checkpoint_paths: "/home/yeguo/turtlebot3_ws/src/turtlebot3_RL/src/saved_model/PPO_V11/PPO_model-23.ckpt"
