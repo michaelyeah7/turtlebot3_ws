@@ -3,7 +3,7 @@
   <arg name="train" default="true"/>
   <arg name="load" default="false"/>
   <arg name="itimateLearning" default="false"/>
-  <arg name="filename" default="PPO_V11"/>
+  <arg name="filename" default="PPO_V13"/>
   <arg name="load_ep" default="91"/>
   <arg name="ep_len" default="100"/>
   <arg name="reset_epLen" default="800"/>
